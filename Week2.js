@@ -31,57 +31,70 @@ console.log("============Task2============");
 function calculateSumOfBonus(data) {
     let bonusSum = 0;
     let totalSalary = 0;
-
-    for (let employee of data.employees) {
-    let performance = employee.performance;//*建立資料變數performance
-    let salary = employee.salary;//*建立資料變數salary
-
-    if (typeof salary === "string" && salary.endsWith("USD")) {//*處理"salary": "1000USD",
+  
+    const roleBonus = {
+      Engineer: 1.2,
+      CEO: 1.5,
+      Sales: 1.1,
+    };
+  
+    for (const employee of data.employees) {
+      const performance = employee.performance;//*建立資料變數performance
+      let salary = employee.salary;//*建立資料變數salary
+      const role = employee.role;//*建立資料變數role
+  
+      if (typeof salary === "string" && salary.endsWith("USD")) {//*處理"salary": "1000USD",
         salary = parseFloat(salary.slice(0, -3)) * 30;
-    } else if (typeof salary === "string") { //*處理"salary": 60000,
-        salary = parseInt(salary.replace(/,/g, "").replace(" TWD", ""));
+        salary = parseInt(salary);
+      } else if (typeof salary === "string") {//*處理"salary": 60000,
+        salary = parseInt(salary.replace(/,/g, ""));//*(/,/g, ""))用意是全部的逗號都會被替換 不是只有第一個
+      }
+  
+      let bonus = 0;
+  
+      if (performance === "above average") {
+        bonus = 3000;
+      } else if (performance === "average") {
+        bonus = 2000;
+      } else if (performance === "below average") {
+        bonus = 1000;
+      }
+  
+      const roleSum = roleBonus[role] || 1.0;//*乘上對應的職位獎金
+      bonusSum += bonus * roleSum;//*bonus乘上職位獎金
+      totalSalary += salary;//*薪水加總
     }
-
-    if (performance === "above average") {
-        bonusSum += 5000;
-    } else if (performance === "average") {
-        bonusSum += 3000;
-    } else if (performance === "below average") {
-        bonusSum += 2000;
-    }
-
-    totalSalary += salary;
-    }
-
-    let totalAmount = totalSalary + bonusSum;
-    totalAmount = new Intl.NumberFormat("en-US", { style: "currency", currency: "TWD", minimumFractionDigits: 0 }).format(totalAmount);
-    //*英語格式 ,貨幣表示,新台幣,不要有小數點,.format(totalAmount)->變成新的表達方式
-    console.log(`The sum of bonuses is: ${bonusSum.toLocaleString()} TWD`);
-    console.log(`The total amount is: ${totalAmount}TWD`);
-    }
-
-calculateSumOfBonus({
+  
+    const totalAmount = totalSalary + bonusSum;//*加薪總額
+  
+    // 顯示結果
+    console.log(`The sum of bonuses is: ${bonusSum.toLocaleString()} TWD`);//*toLocaleString轉換成特定形式
+    console.log(`The total amount is: ${totalAmount.toLocaleString()} TWD`);
+  }
+  
+  calculateSumOfBonus({
     employees: [
-        {
+      {
         name: "John",
         salary: "1000USD",
         performance: "above average",
-        role: "Engineer"
-        },
-        {
+        role: "Engineer",
+      },
+      {
         name: "Bob",
         salary: 60000,
         performance: "average",
-        role: "CEO"
-        },
-        {
+        role: "CEO",
+      },
+      {
         name: "Jenny",
         salary: "50,000",
         performance: "below average",
-        role: "Sales"
-        }
-    ]
-});
+        role: "Sales",
+      },
+    ],
+  });
+  
 
 console.log("============Task3============");
 

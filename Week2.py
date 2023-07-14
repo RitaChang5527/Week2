@@ -23,39 +23,46 @@ print('============Task2============')
 #*所以我先將資料類型都轉換成相同的
 #*再去進行計算
 #*計算方式只有用performance去評估
-
 def calculate_sum_of_bonus(data):
     bonus_sum = 0
     total_salary = 0
 
+    role_bonus = {      #*新增職位獎金
+        "Engineer": 1.2,
+        "CEO": 1.5,
+        "Sales": 1.1
+    }
+
     for employee in data["employees"]:
         performance = employee["performance"]
         salary = employee["salary"]
+        role = employee["role"]
 
         if isinstance(salary, str) and salary.endswith("USD"):
-            salary = float(salary[:-3]) * 30  #*處理"salary": "1000USD",
-            salary = "{:,.0f} TWD".format(salary)  #*加上逗號及TWD
-        elif isinstance(salary, int):  #*處理"salary": 60000,
-            salary = "{:,.0f} TWD".format(salary)  #*加上逗號及TWD
-        else:
-            salary = str(salary) + " TWD"  #*處理"salary": "50,000"
+            salary = float(salary[:-3]) * 30  # 處理 "salary": "1000USD"
+            salary = int(salary)
+        elif isinstance(salary, str):
+            salary = int(salary.replace(",", ""))  # 處理 "salary": "50,000"
 
-        #print(f"Employee: {employee['name']}, Salary: {salary}")
+        # print(f"Employee: {employee['name']}, Salary: {salary}")
 
         if performance == "above average":
-            bonus_sum += 5000
+            bonus = 3000
         elif performance == "average":
-            bonus_sum += 3000
+            bonus = 2000
         elif performance == "below average":
-            bonus_sum += 2000
-
-        if isinstance(salary, str):#*如果Salary是字串類型的
-            salary = int(salary.replace(",", "").replace(" TWD", ""))  #*移除逗號及TWD
-        total_salary += salary#*將薪水加總
-
-    total_amount = total_salary + bonus_sum#*薪水及bonus加總
-    print(f"The sum of bonuses is: {bonus_sum} TWD")
-    print(f"The total amount is: {total_amount} TWD")
+            bonus = 1000
+        else:
+            bonus = 0
+        
+        role_sum = role_bonus.get(role, 1.0)#*乘上對應的職位獎金
+        bonus_sum += bonus * role_sum #*bonus*職位獎金 就是將金加總
+        total_salary += salary  # 將薪水加總
+    total_amount = total_salary + bonus_sum  # 薪水及 bonus 加總
+    
+    # 顯示結果
+    print(f"The sum of bonuses is: {int(bonus_sum):,} TWD")
+    print(f"The total amount is: {int(total_amount):,} TWD")
 
 
 
